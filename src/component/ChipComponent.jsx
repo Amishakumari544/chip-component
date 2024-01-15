@@ -29,14 +29,14 @@ const ChipComponent = () => {
   );
 
   return (
-    <div>
+    <div className='bg-gray-50 m-auto lg:h-[300px] lg:w-[800px] w-[300px]'>
       
       <div className=''>
       <div className='inline-flex flex-wrap w-[400px] lg:w-[800px] gap-2 mt-12' id='chips-container'>
         {chips.map((chip) => (
           <button
             key={chip.name}
-            className={`chip bg-gray-100 text-gray-900 w-34 m-auto rounded-3xl p-2 flex items-center`}
+            className={`chip bg-gray-200 text-gray-900 w-34 m-auto rounded-3xl p-2 flex items-center`}
             onClick={() => handleChipRemove(chip)}
           >
             <img src='https://i.pravatar.cc/25?img=3' className='rounded-xl mr-2' alt={`${chip.name} avatar`} />
@@ -49,20 +49,20 @@ const ChipComponent = () => {
           onChange={handleInputChange}
           onFocus={() => setShowItems(true)} 
           placeholder='Type to filter items'
-          className='outline-none border lg:w-[800px] p-2 mt-2'
+          className='outline-none border lg:w-[700px] m-auto p-2 mt-2 bg-gray-50'
         />
       </div>
 
-        {showItems && inputValue.trim() !== '' && (
-          <ul className='flex m-auto shadow-md items-center justify-center flex-col bg-white border-2 border-gray-200 w-[300px]'>
-            {filteredItems.length === 0 && inputValue.trim() !== '' ? (
+        {showItems && inputValue !== '' && (
+          <ul className='flex m-auto shadow-md items-center lg:w-[800px] justify-center flex-col bg-white border-2 border-gray-200 w-[300px]'>
+            {filteredItems.length === 0 && inputValue !== '' ? (
               <li className='p-2 m-1'>No data found</li>
             ) : (
               filteredItems.length > 0 &&
               filteredItems.map((item) => (
                 <li
                   key={item.name}
-                  className={` p-2 m-1 cursor-pointer hover:bg-slate-50  w-[300px] text-center`}
+                  className={` p-2 m-1 cursor-pointer hover:bg-slate-50  lg:w-[800px] text-center`}
                   onClick={() => handleItemClick(item)}
                 >
                   {item.name}

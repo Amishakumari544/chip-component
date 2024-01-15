@@ -30,7 +30,9 @@ const ChipComponent = () => {
 
   return (
     <div>
-      <div className='inline-flex flex-wrap w-[800px] gap-2 mt-12' id='chips-container'>
+      
+      <div className=''>
+      <div className='inline-flex flex-wrap w-[400px] lg:w-[800px] gap-2 mt-12' id='chips-container'>
         {chips.map((chip) => (
           <button
             key={chip.name}
@@ -41,16 +43,16 @@ const ChipComponent = () => {
             {chip.name} <span className='ml-2'>X</span>
           </button>
         ))}
-      </div>
-      <div className=''>
         <input
           type='text'
           value={inputValue}
           onChange={handleInputChange}
           onFocus={() => setShowItems(true)} 
           placeholder='Type to filter items'
-          className='outline-none border w-[300px] p-2 mt-2'
+          className='outline-none border lg:w-[800px] p-2 mt-2'
         />
+      </div>
+
         {showItems && inputValue.trim() !== '' && (
           <ul className='flex m-auto shadow-md items-center justify-center flex-col bg-white border-2 border-gray-200 w-[300px]'>
             {filteredItems.length === 0 && inputValue.trim() !== '' ? (

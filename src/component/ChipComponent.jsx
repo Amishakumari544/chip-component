@@ -34,10 +34,12 @@ const ChipComponent: React.FC = () => {
   );
 
   return (
-    <div className='lg:bg-gray-50 m-auto lg:h-[300px] lg:w-[800px] w-[300px]'>
+    <div className='lg:bg-gray-50 m-auto px-4 lg:h-[300px] lg:w-[700px] w-[390px]'>
       <div className=''>
-        <div className='flex lg:inline-flex flex-wrap w-auto lg:w-[800px] gap-2 mt-12' id='chips-container'>
+        <div className='flex lg:inline-flex flex-wrap w-auto lg:w-[600px] gap-2 mt-12' id='chips-container'>
+         
           {chips.map((chip) => (
+            <div className="flex justify-start">
             <button
               key={chip.name}
               className={`chip bg-gray-200 text-gray-900 w-34 m-auto rounded-3xl p-2 flex items-center`}
@@ -46,6 +48,7 @@ const ChipComponent: React.FC = () => {
               <img src='https://i.pravatar.cc/25?img=3' className='rounded-xl mr-2' alt={`${chip.name} avatar`} />
               {chip.name} <span className='ml-2'>X</span>
             </button>
+            </div>
           ))}
           <input
             type='text'
@@ -53,12 +56,12 @@ const ChipComponent: React.FC = () => {
             onChange={handleInputChange}
             onFocus={() => setShowItems(true)}
             placeholder='Type to filter items'
-            className='outline-none border lg:w-[700px] m-auto p-2 mt-2 bg-gray-50'
+            className='outline-none border lg:w-[600px] m-auto p-2 mt-2 bg-gray-50'
           />
         </div>
 
         {showItems && inputValue !== '' && (
-          <ul className='flex m-auto shadow-md items-center lg:w-[800px] justify-center flex-col bg-white border-2 border-gray-200 w-[300px]'>
+          <ul className='flex m-auto shadow-md items-center lg:w-[600px] justify-center flex-col bg-white border-2 border-gray-200 w-[200px]'>
             {filteredItems.length === 0 && inputValue !== '' ? (
               <li className='p-2 m-1'>No data found</li>
             ) : (
@@ -66,7 +69,7 @@ const ChipComponent: React.FC = () => {
               filteredItems.map((item) => (
                 <li
                   key={item.name}
-                  className={` p-2 m-1 cursor-pointer hover:bg-slate-50  lg:w-[800px] text-center`}
+                  className={` p-2 m-1 cursor-pointer hover:bg-slate-50  lg:w-[600px] text-center`}
                   onClick={() => handleItemClick(item)}
                 >
                   {item.name}

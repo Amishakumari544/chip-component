@@ -5,5 +5,5 @@
 input[type=text] {
     box-sizing: border-box;
     border: none;
-    border-bottom: 2px solid red;
+    border-bottom: 2px solid blue;
   }

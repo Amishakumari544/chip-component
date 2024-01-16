@@ -30,3 +30,4 @@ This React component implements an auto-suggest chip input field with the follow
 3. Access the component in your application and enjoy the intuitive auto-suggest chip input experience.
 
 Feel free to explore the codebase and customize it according to your project requirements.
+Video of the Component: https://drive.google.com/file/d/1lVpBhTsorJHlf5_w9dLmIm5CDnZYaiHE/view

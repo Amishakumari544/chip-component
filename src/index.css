@@ -16,3 +16,29 @@ input[type=text] {
   border-radius: 5px;
   color: black
 }
+/* Add this style to your CSS */
+.scrollable-list {
+  max-height: 150px; /* Set the maximum height for the scroll */
+  overflow-y: auto;
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+.scrollable-list::-webkit-scrollbar {
+  width: 8px; /* Set the width of the scrollbar */
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.scrollable-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Set the color of the scrollbar thumb */
+  border-radius: 8px; /* Set the border radius of the scrollbar thumb */
+}
+
+.scrollable-list::-webkit-scrollbar-track {
+  background-color: transparent; /* Set the color of the scrollbar track */
+}
+
+/* For Firefox */
+.scrollable-list {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent; /* For Firefox */
+}

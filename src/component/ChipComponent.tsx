@@ -11,7 +11,6 @@ import React, { useState,useRef } from 'react';
     const [items, setItems] = useState<chip[]>(name);
     const [chips, setChips] = useState<chip[]>([]);
     const [showItems, setShowItems] = useState(false);
-    const [inputType, setInputType] = useState('text');
     const inputRef = useRef(null);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,14 +68,23 @@ import React, { useState,useRef } from 'react';
       }
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      // if (inputRef.current && !((inputRef.current as HTMLDivElement).contains(e.relatedTarget as Node))) {
-      //   setShowItems(false);
-      // }
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (inputRef.current && !((inputRef.current as HTMLElement).contains(target))) {
+        setShowItems(false);
+      }
     };
+  
+    // Attach a click event listener to the document to handle clicks outside the input
+    React.useEffect(() => {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }, []);
 
     return (
-      <div className='lg:bg-gray-50 m-auto px-4 lg:h-[300px] lg:w-[700px] w-[390px]'>
+      <div className='lg:bg-gray-50  m-auto px-4 lg:h-[300px] lg:w-[700px] w-[390px]'>
         <h3 className='mt-12 text-blue-600 text-xl font-mono'>Pick Users</h3>
         <div className='' >
           <div className='container mt-12 flex-wrap flex p-2 w-[300px]' id='chips-container'>
@@ -101,24 +109,23 @@ import React, { useState,useRef } from 'react';
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               onFocus={handleInputFocus}
-              onBlur={handleBlur}
               onKeyUp={handleKeyUp}
               ref={inputRef}
-              placeholder='Type to filter items'
+              placeholder='Add new user...'
               className='outline-none border lg:w-[400px] m-auto p-2 mt-2 bg-gray-50'
             />
           </div>
 
           {showItems && (
-            <ul className='overflow-y-scroll overflow-x-hidden h-32 flex pt-2 ml-36 shadow-md lg:w-[300px] justify-center flex-col bg-white border-2 border-gray-200 w-[200px]'>
+            <ul className='scrollable-list overflow-y-scroll overflow-x-hidden h-32 flex pt-2 m-auto  shadow-md lg:w-[300px] justify-center flex-col bg-white border-2 border-gray-200 w-[200px]'>
               {filteredItems.length === 0 && inputValue !== '' ? (
-                <li className='p-2 m-1'>No data found</li>
+                <li className='p-2 m-1 ml-2'>No data found</li>
               ) : (
                 filteredItems.length > 0 &&
                 filteredItems.map((item) => (
                   <li
                   key={item.name}
-                  className={`p-2 m-1 cursor-pointer hover:bg-slate-50 lg:w-[300px] pt-2 flex items-center text-center`}
+                  className={`p-2 m-1 cursor-pointer hover:bg-slate-50  w-full pt-2 flex items-center text-center`}
                   onClick={() => handleItemClick(item)}
                 >
                   <img src={item.avatar} alt={`${item.name} avatar`} className="rounded-full ml-[-10px] w-[28px] mr-2" />

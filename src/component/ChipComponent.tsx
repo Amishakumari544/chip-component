@@ -1,143 +1,182 @@
-import React, { useState,useRef } from 'react';
-  import name from '../name.json';
+import React, { useState, useRef, ChangeEvent } from 'react'
+import name from '../name.json'
 
-  type chip = {
-    name: string;
-    avatar: string;
+type chip = {
+  name: string
+  avatar: string
+  email: string
+}
+
+const ChipComponent: React.FC = () => {
+  const [inputValue, setInputValue] = useState('')
+  const [items, setItems] = useState<chip[]>(name)
+  const [chips, setChips] = useState<chip[]>([])
+  const [isClicked, setIsClicked] = useState<boolean>(false)
+  const inputRef = useRef(null)
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value)
+    setIsClicked(true)
   }
 
-  const ChipComponent: React.FC = () => {
-    const [inputValue, setInputValue] = useState('');
-    const [items, setItems] = useState<chip[]>(name);
-    const [chips, setChips] = useState<chip[]>([]);
-    const [showItems, setShowItems] = useState(false);
-    const inputRef = useRef(null);
+  const handleItemClick = (item: any) => {
+    console.log('hello')
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setInputValue(event.target.value);
-      setShowItems(true);
-    };
+    setChips([...chips, item])
+    setItems(
+      items.filter(i => i.name.toLowerCase() !== item.name.toLowerCase())
+    )
+    setInputValue('')
+    setIsClicked(false)
+  }
 
-    const handleItemClick = (item:any) => {
-      console.log("hello");
-      
-      setChips([...chips, item]);
-      setItems(items.filter((i) => i.name.toLowerCase() !== item.name.toLowerCase()));
-      setInputValue('');
-      setShowItems(false);
-    };
+  const handleChipRemove = (removedChip: chip) => {
+    setChips(chips.filter((chip, i) => chip.name !== removedChip.name))
+    setItems([...items, removedChip])
+  }
 
-    const handleChipRemove = (removedChip: chip) => {
-      setChips(chips.filter((chip,i) => chip.name !== removedChip.name));
-      setItems([...items, removedChip]);
-    };
+  const filteredItems = items.filter(item =>
+    item.name.toLowerCase().includes(inputValue.toLowerCase())
+  )
 
-    const filteredItems = items.filter(
-      (item) => item.name.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const { key } = e;
-      const trimmedInput:any = inputValue.trim();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { key } = e
+    const trimmedInput: any = inputValue.trim()
 
-      if (key === ',' && trimmedInput.length && !chips.includes(trimmedInput)) {
-        e.preventDefault();
-        const newChip = { name: trimmedInput, avatar: "https://xsgames.co/randomusers/avatar.php?g=female" };
-        setChips((prevState) => [...prevState, newChip]);
-        setInputValue('');
-    
-        setInputValue('');
+    if (key === ',' && trimmedInput.length && !chips.includes(trimmedInput)) {
+      e.preventDefault()
+      const foundItem = items.find(
+        item => item.name.toLowerCase() === trimmedInput.toLowerCase()
+      )
+      if (foundItem) {
+        const newChip = {
+          name: trimmedInput,
+          avatar: foundItem.avatar,
+          email: foundItem.email
+        }
+        setChips(prevState => [...prevState, newChip])
+        setInputValue('')
       }
+    }
 
-      if (key === 'Backspace' && !inputValue.length && chips.length) {
-        e.preventDefault();
-        const lastChip = chips[chips.length - 1];
-        setChips(chips.slice(0, -1));
-        setItems((prevState) => [...prevState, lastChip]);
-        setInputValue(lastChip.name);
-      }
-    };
+    if (key === 'Backspace' && !inputValue.length && chips.length) {
+      e.preventDefault()
+      const lastChip = chips[chips.length - 1]
+      setChips(chips.slice(0, -1))
+      setItems(prevState => [...prevState, lastChip])
+      setInputValue(lastChip.name)
+    }
+  }
 
-    const handleKeyUp = () => {
-      setShowItems(true);
-    };
+  const handleKeyUp = () => {
+    setIsClicked(true)
+  }
 
-    const handleInputFocus = () => {
-      if (inputRef.current && inputValue === '') {
-        setShowItems(true);
-      }
-    };
+  const handleInputFocus = () => {
+    if (inputRef.current && inputValue === '') {
+      setIsClicked(true)
+    }
+  }
 
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (inputRef.current && !((inputRef.current as HTMLElement).contains(target))) {
-        setShowItems(false);
-      }
-    };
-  
-    // Attach a click event listener to the document to handle clicks outside the input
-    React.useEffect(() => {
-      document.addEventListener('click', handleClickOutside);
-      return () => {
-        document.removeEventListener('click', handleClickOutside);
-      };
-    }, []);
+  const handleClickOutside = (e: MouseEvent) => {
+    const target = e.target as Node
+    if (
+      inputRef.current &&
+      !(inputRef.current as HTMLElement).contains(target)
+    ) {
+      setIsClicked(false)
+    }
+  }
 
-    return (
-      <div className='lg:bg-gray-50  m-auto px-4 lg:h-[300px] lg:w-[700px] w-[390px]'>
-        <h3 className='mt-12 text-blue-600 text-xl font-mono'>Pick Users</h3>
-        <div className='' >
-          <div className='container mt-12 flex-wrap flex p-2 w-[300px]' id='chips-container'>
-          
-            <div className='flex flex-wrap gap-2'>
-            {chips.map((chip) => (
-              <div className="">
-              <button
-                key={chip.name}
-                className={`chip bg-gray-400 text-gray-900 min-w-32 max-w-72  m-auto rounded-3xl p-1 justify-around flex items-center`}
-                onClick={() => handleChipRemove(chip)}
-              >
-                <img src='https://xsgames.co/randomusers/avatar.php?g=female' className='rounded-full ml-[-10px] w-[28px] mr-2' alt={`${chip.name} avatar`} />
-                {chip.name} <span className='mr-1'>X</span>
-              </button>
-              </div>
-            ))}
+  // Attach a click event listener to the document to handle clicks outside the input
+  React.useEffect(() => {
+    document.addEventListener('click', handleClickOutside)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [])
+
+  return (
+    <>
+    <div className="mt-12 font-bold">
+      <h3 className="text-blue-600 text-xl font-semibold">Pick Users</h3>
+      <h4>Made by @amisha</h4>
+      </div>
+      <div className='relative m-auto mt-48 flex flex-wrap border-b-2 border-blue-500  bg-slate-100 min-h-14 lg:max-w-[1100px] w-full'>
+        {chips.map((person, index) => (
+          <div
+            key={index}
+            className={`flex gap-2 items-center justify-between p-1 m-2 bg-gray-400 rounded-full text-gray-900 border-2  
+          `}
+          >
+            <div className='flex items-center'>
+              <img
+                className='w-8 h-8 rounded-full'
+                src={person.avatar}
+                alt='avatar'
+              />
+              <span className='ml-2 font-semibold '>{person.name}</span>
             </div>
+            <button onClick={() => handleChipRemove(person)} className='px-0.5'>
+              X
+            </button>
+          </div>
+        ))}
+
+        <div className='relative'>
+          <div className='absolute'>
             <input
+              className='p-2 m-2 bg-gray-200 bg-transparent focus:outline-none'
               type='text'
               value={inputValue}
-              onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               onFocus={handleInputFocus}
               onKeyUp={handleKeyUp}
               ref={inputRef}
               placeholder='Add new user...'
-              className='outline-none border lg:w-[400px] m-auto p-2 mt-2 bg-gray-50'
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setInputValue(e.target.value)
+                setIsClicked(true)
+              }}
             />
-          </div>
 
-          {showItems && (
-            <ul className='scrollable-list overflow-y-scroll overflow-x-hidden h-32 flex pt-2 m-auto  shadow-md lg:w-[300px] justify-center flex-col bg-white border-2 border-gray-200 w-[200px]'>
-              {filteredItems.length === 0 && inputValue !== '' ? (
-                <li className='p-2 m-1 ml-2'>No data found</li>
-              ) : (
-                filteredItems.length > 0 &&
-                filteredItems.map((item) => (
-                  <li
-                  key={item.name}
-                  className={`p-2 m-1 cursor-pointer hover:bg-slate-50  w-full pt-2 flex items-center text-center`}
-                  onClick={() => handleItemClick(item)}
-                >
-                  <img src={item.avatar} alt={`${item.name} avatar`} className="rounded-full ml-[-10px] w-[28px] mr-2" />
-                  {item.name}
-                </li>
-                ))
-              )}
-            </ul>
-          )}
+            {isClicked && (
+              <div className='scrollable-list overflow-x-hidden flex flex-col overflow-y-auto h-48'>
+                {filteredItems.length === 0 && inputValue !== '' ? (
+                  <span className='flex items-center  mt-2 text-gray-950 bg-gray-200 p-2 cursor-pointer hover:bg-gray-300'>
+                    No data found
+                  </span>
+                ) : (
+                  filteredItems.length > 0 &&
+                  filteredItems.map((person, index) => (
+                    <div
+                      key={index}
+                      className='flex items-center justify-between p-2 bg-gray-200 cursor-pointer hover:bg-gray-300'
+                      onClick={() => handleItemClick(person)}
+                    >
+                      <div className='flex items-center text-gray-500 rounded-full hover:bg-gray-300'>
+                        <img
+                          className='w-8 h-8 rounded-full'
+                          src={person.avatar}
+                          alt='avatar'
+                        />
+                        <span className='ml-2 font-semibold'>
+                          {person.name}
+                        </span>
+                        <span className='ml-2 text-xs text-gray-400'>
+                          {person.email}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    );
-  };
+    </>
+  )
+}
 
-  export default ChipComponent;
+export default ChipComponent
